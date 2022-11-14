@@ -16,6 +16,10 @@ jobs:
       - name: xray tools
  
         run: |
-          wget 
-          go install -v github.com/tomnomnom/anew@latest
+          wget https://github.com/chaitin/xray/releases/download/1.9.3/xray_linux_amd64.zip
+          #https://github.com/chaitin/xray/releases/download/1.9.3/xray_linux_arm64.zip
+          pwd
+          unzip xray_linux_amd64.zip
+          ls -al
+          
         shell: bash
