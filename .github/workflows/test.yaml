@@ -21,6 +21,6 @@ jobs:
           pwd
           unzip xray_linux_amd64.zip
           ls -al
-          ./xray_linux_arm64 webscan --url https://crypto.com/ 
+          ./xray_linux_amd64 webscan --url https://crypto.com/ 
           
         shell: bash
