@@ -17,11 +17,15 @@ jobs:
  
         run: |
           wget https://github.com/chaitin/xray/releases/download/1.9.3/xray_linux_amd64.zip
+          wget https://github.com/projectdiscovery/katana/releases/download/v0.0.2/katana_0.0.2_linux_amd64.zip
           #https://github.com/chaitin/xray/releases/download/1.9.3/xray_linux_arm64.zip
-          pwd
+          
           unzip xray_linux_amd64.zip
+          unzip katana_0.0.2_linux_amd64
           ls -al
+          pwd
           ./xray_linux_amd64 webscan
-          ./xray_linux_amd64 webscan --url http://testphp.vulnweb.com/
+          ./xray_linux_amd64 webscan --listen 127.0.0.1:7777 | ./katana -u  https://crypto.com -d 5 -ef css,js -proxy 127.0.0.1:7777
+          # katana -l domain.txt -silent |./xray_linux_amd64 webscan --url http://testphp.vulnweb.com/
           
         shell: bash
