@@ -1,0 +1,21 @@
+name: scan-actions
+
+on:
+#    schedule:
+#      - cron: '0 0 * * *'
+# Remove both comments to run this action on daily basis.
+    workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@master
+
+      - name: xray tools
+ 
+        run: |
+          wget 
+          go install -v github.com/tomnomnom/anew@latest
+        shell: bash
