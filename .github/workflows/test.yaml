@@ -24,8 +24,8 @@ jobs:
           unzip katana_0.0.2_linux_amd64
           ls -al
           pwd
-          ./xray_linux_amd64 webscan
-          ./xray_linux_amd64 webscan --listen 127.0.0.1:7777 | ./katana -u  https://crypto.com -d 5 -ef css,js -proxy 127.0.0.1:7777
+          #./xray_linux_amd64 webscan
+          #./xray_linux_amd64 webscan --listen 127.0.0.1:7777 | ./katana -u  https://crypto.com -d 5 -ef css,js -proxy 127.0.0.1:7777
           # katana -l domain.txt -silent |./xray_linux_amd64 webscan --url http://testphp.vulnweb.com/
           
         shell: bash
