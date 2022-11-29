@@ -50,8 +50,11 @@ jobs:
           wget https://github.com/chaitin/xray/releases/download/1.9.3/xray_linux_amd64.zip
           unzip xray_linux_amd64.zip
           mv xray_linux_amd64 xray
-          set +e ;for i in $(cat output/active_urls.txt ); do ./xray webscan --basic-crawler $i --html-output output/`date +%Y%m%d%H%M%S`.html;done
-          cat output/*.html >> output/xray.html
+          #set +e ;for i in $(cat output/active_urls.txt ); do ./xray webscan --basic-crawler $i --html-output output/`date +%Y%m%d%H%M%S`.html;done
+          #cat output/*.html >> output/xray.html
+          
+          set +e ;for i in $(cat output/active_urls.txt ); do ./xray webscan --basic-crawler $i --json-output output/`date +%Y%m%d%H%M%S`.json;done
+          cat output/*.json >> output/xray.json
         shell: bash
         
       - name: Sorting the output results
