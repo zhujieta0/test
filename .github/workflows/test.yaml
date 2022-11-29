@@ -65,7 +65,7 @@ jobs:
       - name: Create local changes
         run: |
           git add output/active_urls.txt
-          git add output/xray.html
+          git add output/xray.json
       - name: Commit results to Github
         run: |
           git config --local user.email "admin@inbug.org"
