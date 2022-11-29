@@ -1,9 +1,6 @@
-name: scan-actions
+name: subfind and xray
 
 on:
-#    schedule:
-#      - cron: '0 0 * * *'
-# Remove both comments to run this action on daily basis.
     workflow_dispatch:
 
 jobs:
@@ -13,20 +10,66 @@ jobs:
       - name: Checkout Repo
         uses: actions/checkout@master
 
-      - name: xray tools
- 
+      - name: Setup golang
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.18
+
+      - name: Setup Dependencies
+        run: sudo apt-get install libpcap-dev 
+           
+        
+
+      - name: Cache Go
+        id: cache-go
+        uses: actions/cache@v2
+        with:
+          path: /home/runner/go
+          key: ${{ runner.os }}-go
+
+      - name: Setting up ProjectDiscovery tools
+        env:
+          GO111MODULE: on
+        run: |
+          go install -v github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
+          #go install -v github.com/projectdiscovery/dnsx/cmd/dnsx@latest
+          #go install -v github.com/projectdiscovery/naabu/v2/cmd/naabu@latest
+          go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
+          #go install -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+          #go install -v github.com/projectdiscovery/mapcidr/cmd/mapcidr@latest
+          go install -v github.com/tomnomnom/anew@latest
+        shell: bash
+
+      - name: Running substr3 and httpx for HTTP webservers probbing
+        run: |
+	      subfinder -silent -dL input/domains.txt -config config/subfinder-config.yaml | anew output/passive_subdomains.txt | httpx -silent | anew output/active_urls.txt
+        shell: bash
+
+      - name: Xray scan urls
         run: |
           wget https://github.com/chaitin/xray/releases/download/1.9.3/xray_linux_amd64.zip
-          wget https://github.com/projectdiscovery/katana/releases/download/v0.0.2/katana_0.0.2_linux_amd64.zip
-          #https://github.com/chaitin/xray/releases/download/1.9.3/xray_linux_arm64.zip
-          
           unzip xray_linux_amd64.zip
-          unzip katana_0.0.2_linux_amd64
-          ls -al
-          pwd
-          ./xray_linux_amd64 webscan
-          ./xray_linux_amd64 webscan --listen 127.0.0.1:7777
-          ./katana -u  https://crypto.com -d 5 -ef css,js -proxy 127.0.0.1:7777
-          # katana -l domain.txt -silent |./xray_linux_amd64 webscan --url http://testphp.vulnweb.com/
-          
+          mv xray_linux_amd64 xray
+          set +e ;for i in $(cat output/active_urls.txt ); do ./xray webscan --basic-crawler $i --html-output output/`date +%Y%m%d%H%M%S`.html;done
+          cat output/*.html >> output/xray.html
         shell: bash
+        
+      - name: Sorting the output results
+        run: |
+          find output -type f -exec sort {} -o {} \;
+        shell: bash
+
+      - name: Create local changes
+        run: |
+          git add output/active_urls.txt
+          git add output/xray.html
+      - name: Commit results to Github
+        run: |
+          git config --local user.email "admin@inbug.org"
+          git config --global user.name "inbug-team"
+          git commit -m "InCloud Report" -a --allow-empty
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
