@@ -53,7 +53,7 @@ jobs:
           #set +e ;for i in $(cat output/active_urls.txt ); do ./xray webscan --basic-crawler $i --html-output output/`date +%Y%m%d%H%M%S`.html;done
           #cat output/*.html >> output/xray.html
           
-          set +e ;for i in $(cat output/active_urls.txt ); do ./xray webscan --basic-crawler $i --json-output output/`date +%Y%m%d%H%M%S`.json;done
+          set +e ;for i in $(cat output/active_urls.txt ); do ./xray webscan --plugins xss,sqldet --basic-crawler $i --json-output output/`date +%Y%m%d%H%M%S`.json;done
           cat output/*.json >> output/xray.json
         shell: bash
         
