@@ -1,7 +1,1 @@
 
-http://rest.vulnweb.com
-http://testasp.vulnweb.com
-http://testaspnet.vulnweb.com
-http://testhtml5.vulnweb.com
-http://testphp.vulnweb.com
-http://www.vulnweb.com
